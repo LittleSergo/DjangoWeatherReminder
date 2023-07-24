@@ -5,8 +5,7 @@
 ### 1. Створити та налаштувати проект.
 
 ### 2. Створити та налаштувати додаток 'weather_reminder':
-1. Створити темплейти, views та urls для реєстрації та логіну користувачів.
-2. Створити моделі subscriprion та city:
+1. Створити моделі subscriprion, city та service:
 
 ```python
 class Subscription(models.Model):
@@ -20,9 +19,18 @@ class Subscription(models.Model):
 
 class City(models.Model):
     subscription = models.ManyToManyField(Subscription, related_name='cities')
+    address = models.CharField(unique=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    
+    
+class Service(models.Model):
     name = models.CharField(max_lenght=150, unique=True)
+    url = models.CharField()
+    api = models.CharField()
 ```
 
+2. Створити темплейти, views та urls для реєстрації та логіну користувачів.
 3. Створити сторінку профілю користувача де він може редагувати профіль та налаштувати підписку.
 4. Написати функції send_email, get_weather та темплейт для листа які будуть брати погоду з API сервісу та відправляти її.
 5. Додати до проекту та налаштувати celery.
