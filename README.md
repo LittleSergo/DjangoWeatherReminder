@@ -15,10 +15,13 @@ class Subscription(models.Model):
     active = models.BooleanField(default=False)
     notification_period = models.DurationField(blank=True)
     notification_last_sent = models.DateTimeField(auto_now_add=True)
+    city = models.ForeignKey(City, on_delete=models.CASCADE,
+                               related_name='subscriptions',)
+    services = models.ManyToManyField(Service, 
+                                      related_name='subscriptions')
 
 
 class City(models.Model):
-    subscription = models.ManyToManyField(Subscription, related_name='cities')
     address = models.CharField(unique=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
