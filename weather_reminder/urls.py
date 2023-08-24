@@ -10,11 +10,11 @@ app_name = 'weather_reminder'
 
 router = routers.DefaultRouter()
 router.register(r'subscriptions', views.SubscriptionView)
+router.register(r'cities', views.CityView)
 
 urlpatterns = [
     path('api/v1/users/register/', views.UserRegistrationView.as_view()),
     path('api/v1/', include(router.urls)),
-    path('api/v1/cities/<int:pk>/', views.RetrieveCityView.as_view()),
     path('api/v1/token/', TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
     path('api/v1/token/refresh/', TokenRefreshView.as_view(),

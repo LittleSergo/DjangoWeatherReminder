@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -10,12 +8,18 @@ class City(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
 
+    def __str__(self):
+        return self.address
+
 
 class Service(models.Model):
     """Service model. Contains service name, url and api key."""
     name = models.CharField(max_length=150, unique=True)
     url = models.CharField(max_length=250)
     api_key = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.name
 
 
 class Subscription(models.Model):
