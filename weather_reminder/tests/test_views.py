@@ -68,14 +68,14 @@ class TestSubscriptionView(TestCase):
         response = self.client.post(
             '/api/v1/subscriptions/',
             data={
-                'city': 'Kyiv',
+                'city': self.city.id,
                 'notification_period': 6,
-                'services': [1]
+                'services': [self.service.id]
             },
             headers={'Authorization': 'Bearer ' + self.access_token}
         )
         self.assertEquals(
-            response.json()['subscription']['notification_period'], 6
+            response.json()['notification_period'], 6
         )
 
     def test_retrieve_subscription(self):
@@ -94,13 +94,13 @@ class TestSubscriptionView(TestCase):
             data={
                 'active': True,
                 'notification_period': 12,
-                'city': 'Odesa',
-                'services': [1]
+                'city': self.city.id,
+                'services': [self.service.id]
             },
             content_type='application/json'
         )
         self.assertEquals(
-            response.json()['Updated']['notification_period'], 12
+            response.json()['notification_period'], 12
         )
 
     def test_retrieve_city(self):
@@ -110,4 +110,33 @@ class TestSubscriptionView(TestCase):
             headers={'Authorization': 'Bearer ' + self.access_token},
             content_type='application/json'
         )
-        self.assertEquals(response.json(), {'address': 'Kyiv, Ukraine'})
+        self.assertEquals(response.json()['address'], 'Kyiv, Ukraine')
+
+    def test_search_city(self):
+        """Search city by name."""
+        response = self.client.get(
+            f'/api/v1/cities/?search=Kyiv',
+            headers={'Authorization': 'Bearer ' + self.access_token},
+            content_type='application/json'
+        )
+        self.assertEquals(response.json()['address'], 'Kyiv, Ukraine')
+
+    def test_get_cities(self):
+        """Get all City objects."""
+        response = self.client.get(
+            f'/api/v1/cities/',
+            headers={'Authorization': 'Bearer ' + self.access_token},
+            content_type='application/json'
+        )
+        self.assertEquals(response.json()[0]['address'], 'Kyiv, Ukraine')
+
+    def test_post_cities(self):
+        """Post and create new one city."""
+        response = self.client.post(
+            f'/api/v1/cities/',
+            headers={'Authorization': 'Bearer ' + self.access_token},
+            data={"address": 'New York, USA'},
+            content_type='application/json'
+        )
+        self.assertEquals(response.json()['address'],
+                          'New York, United States')
