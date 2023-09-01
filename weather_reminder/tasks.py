@@ -4,11 +4,13 @@ from datetime import timedelta
 from pytz import timezone
 
 from django.template.loader import render_to_string
+from django.db import transaction
 
 from django_weather_reminder.celery import app
 from django.core.mail import EmailMessage
 
-from weather_reminder.models import Subscription
+from weather_reminder.models import Subscription, City, Service
+from weather_reminder.serializers import SubscriptionSerializer
 
 
 def build_weather_data_from_weatherapi(json_response):
@@ -59,16 +61,17 @@ def retrieve_weather(city, service):
 
 
 @app.task
-def send_email(email: str, city, services):
+def send_email(email: str, subscription_data: dict):
     """Build a html email and send it.
     :param email:
-    :param city:
-    :param services:
+    :param subscription_data:
     :return:
     """
-    weather_data = [retrieve_weather(
-        city, service
-    ) for service in services.all()]
+    with transaction.atomic():
+        city = City.objects.get(pk=subscription_data['city'])
+        weather_data = [retrieve_weather(
+            city, Service.objects.get(pk=service_id)
+        ) for service_id in subscription_data['services']]
     title_width = len(weather_data) * 240 + (len(weather_data) - 1) * 3
     message = render_to_string('weather_reminder/mail_template.html',
                                context={
@@ -90,7 +93,8 @@ def weather_dispatch():
     for sub in Subscription.objects.filter(active=True):
         if datetime.datetime.now(
                 tz=timezone('EET')) >= sub.notification_last_sent + timedelta(
-                    hours=sub.notification_period):
-            send_email.delay(sub.user.email, sub.city, sub.services)
-            sub.notification_last_sent = datetime.datetime.now(tz=timezone('EET'))
+                    minutes=sub.notification_period):
+            send_email.delay(sub.user.email, SubscriptionSerializer(sub).data)
+            sub.notification_last_sent = datetime.datetime.now(
+                tz=timezone('EET'))
             sub.save()
