@@ -13,7 +13,7 @@ from weather_reminder.models import Subscription, City, Service
 from weather_reminder.serializers import SubscriptionSerializer
 
 
-def build_weather_data_from_weatherapi(json_response):
+def build_weather_data_from_weatherapi(json_response: dict) -> list:
     """Build data from WeatherAPI service response."""
     weather_info = json_response['current']['condition']['text']
     weather_data = {
@@ -27,7 +27,7 @@ def build_weather_data_from_weatherapi(json_response):
     return [weather_info, weather_data]
 
 
-def build_weather_data_from_openweather(json_response):
+def build_weather_data_from_openweather(json_response: dict) -> list:
     """Build data from OpenWeather service response."""
     weather_info = json_response['weather'][0]['main']
     weather_data = {
@@ -41,7 +41,7 @@ def build_weather_data_from_openweather(json_response):
     return [weather_info, weather_data]
 
 
-def retrieve_weather(city, service):
+def retrieve_weather(city: City, service: Service) -> list:
     """Get the weather info from the service and build data for email."""
     response = requests.get(service.url.format(
         key=service.api_key,

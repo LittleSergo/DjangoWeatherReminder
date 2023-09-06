@@ -47,6 +47,14 @@ class CityView(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated, )
 
     def list(self, request, *args, **kwargs):
+        """If the parameter 'search' passed return City object if exists,
+        and return the message 'The city doesn't exist' if not.
+        Or return all cities if its simple get request.
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         if 'search' in request.query_params:
             city = get_city_obj_if_exists(request.query_params['search'])
             if city:
@@ -58,5 +66,6 @@ class CityView(viewsets.ModelViewSet):
         )
 
     def destroy(self, request, *args, **kwargs):
+        """Don't allow user to delete the cities."""
         return Response({'detail': 'Method not allowed for DELETE.'},
                         status=status.HTTP_405_METHOD_NOT_ALLOWED)
