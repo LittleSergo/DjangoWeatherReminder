@@ -93,7 +93,7 @@ def weather_dispatch():
     for sub in Subscription.objects.filter(active=True):
         if datetime.datetime.now(
                 tz=timezone('EET')) >= sub.notification_last_sent + timedelta(
-                    minutes=sub.notification_period):
+                    hours=sub.notification_period):
             send_email.delay(sub.user.email, SubscriptionSerializer(sub).data)
             sub.notification_last_sent = datetime.datetime.now(
                 tz=timezone('EET'))
