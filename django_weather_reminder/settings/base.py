@@ -117,8 +117,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-DEFAULT_FILE_STORAGE = 'core.azure_storage.AzureMediaStorage'
-STATICFILES_STORAGE = 'core.azure_storage.AzureStaticStorage'
+DEFAULT_FILE_STORAGE = 'django_weather_reminder.azure_storage.AzureMediaStorage'
+STATICFILES_STORAGE = 'django_weather_reminder.azure_storage.AzureStaticStorage'
 
 AZURE_ACCOUNT_NAME = env.str('AZURE_ACCOUNT_NAME')
 AZURE_ACCOUNT_KEY = env.str('AZURE_ACCOUNT_KEY')
