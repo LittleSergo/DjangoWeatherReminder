@@ -125,7 +125,7 @@ AZURE_ACCOUNT_KEY = env.str('AZURE_ACCOUNT_KEY')
 AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
 
 STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static'
 
 
 # Default primary key field type
