@@ -1,36 +1,11 @@
-# DjangoWeatherReminder - Task 16 - Decompose project
+# DjangoWeatherReminder
 
-## План роботи:
+That is API application like a service of weather notification in the 
+subscribed city via email, webhook.  DjangoWheatherRemider application 
+is provided API for getting information about the weather. User 
+(or third-party service) can register and get auth token like a JWT (JSON web token).
+The user can subscribe/unsubscribe to one or a few cities with parameters like a 
+period of notification(1, 3, 6, 12 hours), etc. The user can edit parameters 
+of subscribing or delete. The user can get a list of subscribing.
 
-### 1. Створити та налаштувати проект.
-
-### 2. Створити та налаштувати додаток 'weather_reminder':
-1. Створити моделі subscription, city та service.   --Виконано
-2. Створити view та url для реєстрації користувачів.  --Виконано
-3. Додати simple-jwt до проєкту.  --Виконано
-4. Створити ендпоінт для підписок де можна створювати та корегувати підписки.  --Виконано
-5. Написати функції send_email, get_weather та темплейт для листа які будуть брати погоду з API сервісу та відправляти її.
-6. Додати до проекту та налаштувати celery.
-7. Написати task та графік виконання таску.
-
-tasks.py:
-```python
-@app.task
-def weather_dispatch():
-    for sub in Subscription.objects.filter(active=True):
-        if datetime.now() <= sub.notification_last_sent + \
-                timedelta(sub.notification_period):
-            send_email(sub.user, sub.cities)
-            sub.notification_last_sent = datetime.now()
-            sub.save()
-```
-celery.py:
-```python
-# ...
-from selery.schedules import crontab
-
-app.conf.beat_schedule = {
-    'task': 'weather_reminder.tasks.weather_dispatch',
-    'schedule': crontab(minute='*/10'),
-}
-```
+Application configured for deploying to MS Azure.
